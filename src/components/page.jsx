@@ -1,7 +1,8 @@
 import './script_for_date_and_time'
 import React, { useState, useEffect } from 'react';
 import Logo from '../assets/Picture1.png';
-import Video from '../assets/Media1.mp4';
+import Pic1 from '../assets/1.png';
+import Pic2 from '../assets/2.png';
 import StartFirebase from '../firebase';
 import { ref, onValue } from "firebase/database";
 
@@ -13,6 +14,18 @@ function MonitoringSystem() {
     const [showInformation, setShowInformation] = useState(false);
     const [bubbles, setBubbles] = useState([]);
     const [tableData, setTableData] = useState([]);
+
+    const [displayCount, setDisplayCount] = useState(10);
+    const [showMore, setShowMore] = useState(false);
+
+    const handleShowMore = () => {
+        setShowMore(!showMore);
+        if (!showMore) {
+            setDisplayCount(tableData.length);
+        } else {
+            setDisplayCount(10);
+        }
+    };
 
     const fetchData = () => {
         const dbRef = ref(db, 'Readings');
@@ -106,7 +119,7 @@ function MonitoringSystem() {
                             </tr>
                         </thead>
                         <tbody>
-                            {tableData.slice().reverse().map((item, index) => (
+                            {tableData.slice().reverse().slice(0, displayCount).map((item, index) => (
                                 <tr key={index}>
                                     <td>{item.key.split(";")[0]}</td>
                                     <td>{item.key.split(";")[1]}</td>
@@ -118,6 +131,13 @@ function MonitoringSystem() {
                             ))}
                         </tbody>
                     </table>
+                    <div style={{ textAlign: 'center' }}>
+                        {tableData.length > 10 && (
+                            <button onClick={handleShowMore}>
+                                {showMore ? "See Less" : "See More"}
+                            </button>
+                        )}
+                    </div>
                 </div>
             )}
 
@@ -157,10 +177,9 @@ function MonitoringSystem() {
                 <div id="welcome-section" className="center">
                     <h2 className="animate__animated animate__bounce">Welcome!</h2>
                     <p>This website is created by the researchers from the University of Rizal System - Morong Campus.</p>
-                    <video width="520" height="400" controls>
-                        <source src={Video} type="video/mp4"/>
-                        Your browser does not support the video tag.
-                    </video>
+                    
+                    <img src={Pic1} alt="device picture" width="520" height="400"/>
+                    <img src={Pic2} alt="device picture" width="520" height="400"/>
                 </div>
             )}
 
